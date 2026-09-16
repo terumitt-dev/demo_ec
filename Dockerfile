@@ -1,4 +1,4 @@
-FROM ruby:3.1.2-bookworm
+FROM ruby:3.1.2-bullseye
 
 RUN apt-get update && apt-get install -y postgresql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
