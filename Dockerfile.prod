@@ -4,7 +4,8 @@
 FROM ruby:3.1.2-bullseye AS build
 
 # bullseyeはEOLによりdeb.debian.org/security.debian.orgから提供終了のためarchive.debian.orgへ向ける
-RUN sed -i 's|deb.debian.org|archive.debian.org|g; s|security.debian.org|archive.debian.org|g' /etc/apt/sources.list
+# debian-security行はarchive.debian.orgにミラーがないため削除する
+RUN sed -i 's|deb.debian.org|archive.debian.org|g; /security/d' /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -33,7 +34,8 @@ RUN bundle exec bootsnap precompile app/ lib/ && \
 FROM ruby:3.1.2-slim-bullseye
 
 # bullseyeはEOLによりdeb.debian.org/security.debian.orgから提供終了のためarchive.debian.orgへ向ける
-RUN sed -i 's|deb.debian.org|archive.debian.org|g; s|security.debian.org|archive.debian.org|g' /etc/apt/sources.list
+# debian-security行はarchive.debian.orgにミラーがないため削除する
+RUN sed -i 's|deb.debian.org|archive.debian.org|g; /security/d' /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
