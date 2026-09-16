@@ -1,0 +1,81 @@
+# =========================
+# CI/CD Pipeline
+# =========================
+# ECR_REGISTRY未確定のため、ECRへのpushは一旦コメントアウトしビルド確認のみ実施。
+# ECR_REGISTRYが決まり次第、setup-ecr-authを有効化しbuildのpush分岐を戻す。
+kind: pipeline
+type: kubernetes
+name: ci-cd
+
+trigger:
+  event: [push, pull_request]
+  branch: [main, develop]
+
+node_selector:
+  node-role: drone
+tolerations:
+  - key: dedicated
+    value: drone
+    effect: NoSchedule
+
+steps:
+  - name: check-vars
+    image: alpine
+    environment:
+      AWS_REGION:
+        from_secret: AWS_REGION
+      AWS_ACCESS_KEY_ID:
+        from_secret: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: AWS_SECRET_ACCESS_KEY
+    commands:
+      - set -euxo pipefail
+      - '[ -n "$AWS_REGION" ]'
+      - '[ -n "$AWS_ACCESS_KEY_ID" ]'
+      - '[ -n "$AWS_SECRET_ACCESS_KEY" ]'
+
+  # ECR_REGISTRYが決まったら復活させる
+  # - name: setup-ecr-auth
+  #   image: amazon/aws-cli:latest
+  #   when:
+  #     branch: [main]
+  #     event: [push]
+  #   environment:
+  #     AWS_REGION:
+  #       from_secret: AWS_REGION
+  #     AWS_ACCESS_KEY_ID:
+  #       from_secret: AWS_ACCESS_KEY_ID
+  #     AWS_SECRET_ACCESS_KEY:
+  #       from_secret: AWS_SECRET_ACCESS_KEY
+  #     ECR_REGISTRY:
+  #       from_secret: ECR_REGISTRY
+  #   commands:
+  #     - mkdir -p /drone/src/.docker
+  #     - |
+  #       ECR_TOKEN=$(aws ecr get-login-password --region "$AWS_REGION")
+  #       AUTH=$(printf 'AWS:%s' "$ECR_TOKEN" | base64 -w 0)
+  #       printf '{"auths":{"%s":{"auth":"%s"}}}' "$ECR_REGISTRY" "$AUTH" > /drone/src/.docker/config.json
+  #     - echo "ECR auth config written"
+
+  - name: build
+    image: gcr.io/kaniko-project/executor:debug
+    commands:
+      # ECR_REGISTRYが決まったらDOCKER_CONFIGとpush分岐を復活させる
+      - |
+        /kaniko/executor \
+          --context=dir:///drone/src \
+          --dockerfile=/drone/src/Dockerfile.prod \
+          --no-push
+      # - |
+      #   if [ "$DRONE_BRANCH" = "main" ] && [ "$DRONE_BUILD_EVENT" = "push" ]; then
+      #     /kaniko/executor \
+      #       --context=dir:///drone/src \
+      #       --dockerfile=/drone/src/Dockerfile.prod \
+      #       --destination="$ECR_REGISTRY/demo-ec:$DRONE_COMMIT_SHA" \
+      #       --destination="$ECR_REGISTRY/demo-ec:latest"
+      #   else
+      #     /kaniko/executor \
+      #       --context=dir:///drone/src \
+      #       --dockerfile=/drone/src/Dockerfile.prod \
+      #       --no-push
+      #   fi

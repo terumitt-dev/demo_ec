@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  
+  # ヘルスチェック用（Docker HEALTHCHECK / 将来のLBヘルスチェックから使用）
+  get "up" => proc { [200, { "Content-Type" => "text/plain" }, ["OK"]] }
+
+
   get 'addresses/:id/new' => 'addresses#new'
   post 'addresses/:id/create' => 'addresses#create'
   
