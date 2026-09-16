@@ -31,8 +31,8 @@
 ## CI/CD
 
  - Drone CI（`.drone.yml`）でpush/PR時にDockerイメージをビルド
- - mainブランチへのpush時はAWS ECRへイメージをpush（`demo-ec:<commit sha>` / `latest`）
- - デプロイ先（K8s等）は調整中のため、現時点ではビルド確認までを実施
+ - ECR_REGISTRY未確定のため、ECRへのpushは一旦コメントアウトしビルド確認のみ実施（AWS認証情報は設定済み）
+ - デプロイ先（K8s等）も調整中
  - PRレビューはGitHub Actions経由でClaude/CodexのダブルAIレビュー＋自動Approveに対応（`.github/workflows/`, `CLAUDE.md`）
 
 ## 課題（今後の改善等）
