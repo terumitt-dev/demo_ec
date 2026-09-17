@@ -1,0 +1,16 @@
+# .gitignoreと違いDockerビルドコンテキストには反映されないため個別に用意する
+.git/
+.env
+.env.*
+!.env.example
+config/master.key
+
+log/*
+tmp/*
+!log/.keep
+!tmp/.keep
+storage/*
+!storage/.keep
+
+.bundle
+public/assets
