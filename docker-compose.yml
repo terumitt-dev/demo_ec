@@ -6,8 +6,9 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       # ホスト5432はローカルPostgreSQL/他プロジェクトのdocker-compose(myblog等)が
-      # 使用していることがあるため5433に公開
-      - "5433:5432"
+      # 使用していることがあるため5433に公開。既知の開発用パスワードのため
+      # 127.0.0.1限定でLAN等からアクセスできないようにする
+      - "127.0.0.1:5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
