@@ -8,6 +8,13 @@ services:
       # ホスト5432はローカルPostgreSQL/他プロジェクトのdocker-compose(myblog等)が
       # 使用していることがあるため5433に公開
       - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   web:
     build: .
@@ -18,7 +25,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DATABASE_HOST=db
       - DATABASE_USERNAME=postgres
@@ -26,3 +34,4 @@ services:
 
 volumes:
   tmp:
+  db_data:
