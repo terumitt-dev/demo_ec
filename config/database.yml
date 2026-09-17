@@ -17,6 +17,12 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  # 未設定ならnilになりローカルのUnixソケット接続にフォールバックする
+  # (docker-composeではDATABASE_HOST=db等を指定してTCP接続に切り替える)
+  host: <%= ENV["DATABASE_HOST"] %>
+  port: <%= ENV.fetch("DATABASE_PORT", "5432").to_i %>
+  username: <%= ENV["DATABASE_USERNAME"] %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>

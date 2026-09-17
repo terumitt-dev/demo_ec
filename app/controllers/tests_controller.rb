@@ -5,7 +5,7 @@ class TestsController < ApplicationController
 
   def pay
     require 'payjp'
-    Payjp.api_key = "sk_test_9b54572d69676cf4d152578e"
+    Payjp.api_key = ENV.fetch("PAYJP_SECRET_KEY")
     Payjp::Charge.create(
       :amount => 8000, # 決済する値段
       :card => params['payjp-token'], # フォームを送信すると作成・送信されてくるトークン
