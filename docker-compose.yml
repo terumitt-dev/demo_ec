@@ -20,8 +20,8 @@ services:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:create && bin/rails db:migrate && bin/rails s -b 0.0.0.0 -p 3000"
     volumes:
-      - tmp:/demo_ec/tmp
       - .:/demo_ec
+      - tmp:/demo_ec/tmp
     ports:
       - "3000:3000"
     depends_on:
