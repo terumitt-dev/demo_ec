@@ -10,70 +10,69 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_09_130804) do
+ActiveRecord::Schema[8.1].define(version: 2022_08_09_130804) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "addresses", force: :cascade do |t|
-    t.string "family_name"
-    t.string "given_name"
-    t.string "tel"
-    t.string "email"
-    t.string "postal_code"
     t.string "address_level1"
     t.string "address_level2"
     t.string "address_line1"
     t.string "address_line2"
-    t.string "organization"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "order_id"
-    t.integer "user_id"
-    t.integer "item_id"
     t.integer "cart_id"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "family_name"
+    t.string "given_name"
+    t.integer "item_id"
+    t.integer "order_id"
+    t.string "organization"
+    t.string "postal_code"
+    t.string "tel"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "carts", force: :cascade do |t|
-    t.integer "user_id"
+    t.datetime "created_at", null: false
     t.integer "item_id"
     t.integer "quantity"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "items", force: :cascade do |t|
-    t.string "name"
-    t.integer "price"
     t.text "content"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "image_name"
+    t.string "name"
+    t.integer "price"
+    t.datetime "updated_at", null: false
     t.integer "user_id"
   end
 
   create_table "likes", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "item_id"
     t.datetime "created_at", null: false
+    t.integer "item_id"
     t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "orders", force: :cascade do |t|
-    t.integer "user_id"
+    t.integer "cart_id"
+    t.datetime "created_at", null: false
     t.integer "item_id"
     t.integer "total_price"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "cart_id"
+    t.integer "user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
-    t.string "email"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "email"
     t.string "image_name"
+    t.string "name"
     t.string "password_digest"
+    t.datetime "updated_at", null: false
   end
-
 end
